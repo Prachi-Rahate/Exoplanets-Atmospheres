@@ -1,2 +1,6 @@
 # Exoplanets-Atmospheres
-My approach to the AIP phd project position 1 -Observational
+My approach to the AIP phd project position 1 - Observational
+
+Approach and goals:-
+1. Learning X-ray data - interpretation
+2. reconstruction of the same data
