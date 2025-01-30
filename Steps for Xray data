@@ -1,0 +1,115 @@
+-------------PART1 - Installation-------------
+To deal with Xray data and be able to use the files, we need to install:-
+1. Heasoft (includes XSPEC) -  A software package for handling data from space telescopes [HEASoft for LINUX - https://heasarc.gsfc.nasa.gov/lheasoft/linux.html]
+2. SAS - A software specific to XMM-Newton data analysis [https://www.cosmos.esa.int/web/xmm-newton/download-and-install-sas]
+3. XMM CCF (Calibration Files) - Calibration files needed for data processing.
+
+
+Once all the pre-requisites and necessicities are downloaded
+ - source /export/mnt/d/heasoft-6.27.2/x86_64-pc-linux-gnu-libc2.27/headas-init.sh
+ - source /export/mnt/d/xmm/xmmsas_20170112_1337/setsas.sh
+ - export SAS_CCFPATH=/export/mnt/d/calibration/xmm/ccf/
+
+
+-------------PART2 - Download the data--------------
+Link: https://heasarc.gsfc.nasa.gov/cgi-bin/W3Browse/w3browse.pl
+Type in the object -> select the mission -> under "Query results" select data -> under "Data product retrieval" click "Retrieve" -> generated a link and dowmload the .tar file
+Go to ODF directory unzip all the files using the command gunzip * in the wsl
+
+
+-------------PART3 - Data extraction----------------
+Now set the paths of “SAS_ODF”, “SAS_ODFPATH”, “SAS_CCF” and these paths will be link to where data is downloaded.
+ - export SAS_ODF=/export/mnt/d/data/0049350201/ODF/
+ - export SAS_ODFPATH=/export/mnt/d/data/0049350201/ODF/
+
+Run the command cifbuild, it creates a “ccf.cif” file thats set the path of
+ - export SAS_CCF=/export/mnt/d/data/0049350201/ODF/ccf.cif
+
+Now type the command odfingest. This creates a “.SAS” extension file. 
+Now update the path of “SAS_ODF” by:-  export SAS_ODF=/export/mnt/d/data/0049350201/ODF/*.SAS
+
+Then create a new directory to storing the clean event files, spectra, and light curves. Name it like "Data extraction"
+In this, again create 4 directoried named:- PN, MOS, RGS, OM.
+These are for four detectors: PN, MOS, RGS, OM. 
+Now go to each directory and type the following command,
+epproc inside PN directory
+emproc inside MOS directory
+rgsproc inside RGS directory
+omichain inside OM directory
+These commands will create clean event files for each detector.
+
+
+------------PART4 - Extract spectra and lightcurves---------------
+For MOS----->
+First make a copy of the files ending with EMOS1_S001 & EMOS2_S005 as m1.evt and m2.evt. These created copies are termed as event files.
+ - cp *_EMOS1_S001_ImagingEvts.ds m1.evt
+ - cp *_EMOS2_S005_ImagingEvts.ds m2.evt
+
+To create lightcurves type the following command:-
+ - evselect table=m1.evt energycolumn=PI expression='#XMMEA_EM && (PI>10000) && (PATTERN==0)' withrateset=yes rateset="m1lcurve_sup100.lc" timebinsize=100 maketimecolumn=yes makeratecolumn=yes
+This creates a light of energy band 10kev and above. To open the light curve use the command: lcurve
+Refer Fig 1
+
+If there's any flaring event visible then to remove them:-
+ - tabgtigen table=m1lcurve_sup100.lc gtiset=m1good_bkg.gti expression='RATE<0.5'
+
+To create new event file (m1_new.evt) free of proton flares use:-
+ - evselect table=m1.evt expression='#XMMEA_EM && (PI > 150) && (GTI(m1good_bkg.gti,TIME))' withfilteredset=yes keepfilteroutput=yes filteredset=m1_new.evt updateexposure=yes cleandss=yes writedss=yes
+
+To check for pileup regions:-
+Open the new event file in DS9:- ds9 m1_new.evt
+Scae:log
+color:b
+bin: 32 or 64
+Select circular region where the source/object of study is
+
+Now change these coordinates to physical units. Example for the star taken, Physical values -- Center (x,y), radius = 26766.82,27704.5,18189.6
+Then use command: evselect table=m1_new.evt withfilteredset=yes filteredset=m1f.evt keepfilteroutput=yes expression=="((X,Y) IN circle(26766.82,27704.5,18189.6))"
+Refer figure 2
+
+To check pile up region type in commands:-
+ - epatplot set=m1f.evt device="/CPS" plotfile="m1f_pat.ps"
+ - gv m1f_pat.ps
+In the output figure when the data follows very close to the theoretical curve. This indicates there is no pile-up, and you are good to go
+Refer figure 3
+
+To create source spectra fit file:- m1src_spectrum.fits
+Use command:- evselect table=m1_new.evt withspectrumset=yes spectrumset=m1src_spectrum.fits energycolumn=PI spectralbinsize=15 withspecranges=yes specchannelmin=0 specchannelmax=11999 expression='(FLAG==0) && (PATTERN<=12) && ((X,Y) IN
+circle(26766.82,27704.5,18189.6))'
+
+To create background spectra fit file:-m1bkg_spectrum.fits
+Use command:- evselect table=m1_new.evt withspectrumset=yes spectrumset=m1bkg_spectrum.fits energycolumn=PI spectralbinsize=15 withspecranges=yes specchannelmin=0 specchannelmax=11999 expression='(FLAG==0) && (PATTERN<=12) && ((X,Y) IN circle(26766.82,27704.5,18189.6))'
+
+To calculate geometric area of source and background region use commands:-
+ - backscale spectrumset=m1src_spectrum.fits badpixlocation=m1_new.evt
+ - backscale spectrumset=m1bkg_spectrum.fits badpixlocation=m1_new.evt
+
+To create response and auxillary files use:-
+ - rmfgen spectrumset=m1src_spectrum.fits rmfset=m1.rmf
+ - arfgen spectrumset=m1src_spectrum.fits arfset=m1.arf withrmfset=yes rmfset=m1.rmf
+ - badpixlocation=m1_new.evt detmaptype=psf
+
+HEASoft command for binning:
+ - grppha m1src_spectrum.fits m1_20.grp comm= "chkey RESPFILE m1.rmf & chkey ANCRFILE m1.arf & chkey BACKFILE m1bkg_spectrum.fits & group min 20 & exit"
+This groups spectra of 20 counts per bin for higher signal to noise ratio.
+
+For creating lightcurves, use commands:-
+ - evselect table=m1_new.evt energycolumn=PI expression='#XMMEA_EM &&(PATTERN<=12)&&((X,Y) IN circle(26766.82,27704.5,18189.6))&&(PI in [300:10000])' withrateset=yes rateset='m1src_lc_raw.lc' 
+timebinsize=10 maketimecolumn=yes makeratecolumn=yes
+
+ - evselect table=m1_new.evt energycolumn=PI expression='#XMMEA_EM &&(PATTERN<=12)&&((X,Y) IN circle(26766.82,27704.5,18189.6))&&(PI in [300:10000])' withrateset=yes rateset='m1bkg_lc_raw.lc' 
+timebinsize=10 maketimecolumn=yes makeratecolumn=yes
+
+ - epiclccorr srctslist=m1src_lc_raw.lc eventlist=m1_new.evt outset=m1_lc_0.3_10kev.lc bkgtslist=m1bkg_lc_raw.lc withbkgset=yes applyabsolutecorrections=yes
+
+
+
+
+
+
+
+
+
+
+
+ 
