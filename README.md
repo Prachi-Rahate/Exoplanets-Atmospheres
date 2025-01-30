@@ -17,5 +17,3 @@ This includes screenshots of in-between processes. In file "1. Process" wherever
 
 File - 3. Overview
 Here I write my progress and some thoughts and learnings in key sentences.
-
-Note:- This approach was made possible with the PDF notes by Samaresh Mondal (smondal@camk.edu.pl)
