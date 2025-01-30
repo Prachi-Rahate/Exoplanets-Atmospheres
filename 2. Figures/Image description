@@ -1,0 +1,4 @@
+This folder has all the figures mentioned in file "1. Process"
+Figure1 - Lightcurve of the data downloaded for energy band 10 keV and above from the whole MOS CCD chip
+Figure2 - To check pile up region when opened on DS9, and enabling select scale: log, color: b and bin: block 64, then using region to get cooredinates
+Figure3 - Output when I checked for Pile-up region. The data line is very much closer to the theoretical line.
