@@ -15,6 +15,8 @@ But when I wanted to proceed with data analysis using XSPEC, my wsl got corrupt 
 
 So now, I need to again, redo the whole installation of HEASOFT and SAS  and redo this data extraction and reduction to move further.
 
+As I will do this again, this directory will be further updated accordingly.
+
 Status for my Approach and goals
 1. Learning X-ray data - extraction, reduction, interpretation - Achieved
 2. Create Xray spectra and lightcurves - achieved
