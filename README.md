@@ -1,5 +1,10 @@
 # X-ray data analysis
 
+## Approach and goals
+## 1. Learning X-ray data - extraction, reduction, interpretation
+## 2. Create Xray spectra and lightcurves
+## 3. Data analysis
+
 To learn abour X-ray data analysis, I am focusing on learning XSPEC and using data of Proxima Centauri from XMM-Newton.
 
 I was able to successfully install HEASoft and SAS and started to experiment on data from MOS detector because this one showed no error while I was working on it.
