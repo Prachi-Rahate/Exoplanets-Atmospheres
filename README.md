@@ -8,6 +8,7 @@ Approach and goals
 3. Data analysis
 
 Here I try to learn how to download and prepare data of star Proxima Centauri from XMM newton so that I can analyze it using XSPEC.
+
 File - 1. Process
 This list all the steps I took which includes installation, data reduction and generating spectra and so on.
 
