@@ -1,3 +1,7 @@
+Here i list the process/codes I went through for installation and reduction of data of Proxima centauri
+Note:- Figures 1,2,3 are in the figures directory
+
+
 -------------PART1 - Installation-------------
 To deal with Xray data and be able to use the files, we need to install:-
 1. Heasoft (includes XSPEC) -  A software package for handling data from space telescopes [HEASoft for LINUX - https://heasarc.gsfc.nasa.gov/lheasoft/linux.html]
