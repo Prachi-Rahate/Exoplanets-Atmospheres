@@ -1,28 +1,18 @@
 # X-ray data analysis
 
-## Approach and goals
-## 1. Learning X-ray data - extraction, reduction, interpretation
-## 2. Create Xray spectra and lightcurves
-## 3. Data analysis
+This is a repository created for my developments with learning X-ray data and analysis.
 
-To learn abour X-ray data analysis, I am focusing on learning XSPEC and using data of Proxima Centauri from XMM-Newton.
+Approach and goals
+1. Learning X-ray data - extraction, reduction, interpretation
+2. Create Xray spectra and lightcurves
+3. Data analysis
 
-I was able to successfully install HEASoft and SAS and started to experiment on data from MOS detector because this one showed no error while I was working on it.
-For data from PN detector, either the files were not good for this particular data that I downloaded or it could have gone corrupt during extraction (not sure)
+Here I try to learn how to download and prepare data of star Proxima Centauri from XMM newton so that I can analyze it using XSPEC.
+File - 1. Process
+This list all the steps I took which includes installation, data reduction and generating spectra and so on.
 
-I was able to learn some aspect of X-ray data like the process of observering and obtaining the data is very different from the one we get photometry, its quite indirect.
+Folder - 2. Figures
+This includes screenshots of in-between processes. In file "1. Process" wherever I mention "Refer figure 1" This is the place to find them.
 
-It took me a while to grasp the idea behind the lightcurve you get for xrays.
-
-I was able to reach till the process of generating spectra and lightcurve of Proxima centauri.
-
-But when I wanted to proceed with data analysis using XSPEC, my wsl got corrupt and I could not go further now.
-
-So now, I need to again, redo the whole installation of HEASOFT and SAS  and redo this data extraction and reduction to move further.
-
-As I will do this again, this directory will be further updated accordingly.
-
-Status for my Approach and goals
-1. Learning X-ray data - extraction, reduction, interpretation - Achieved
-2. Create Xray spectra and lightcurves - achieved
-3. Data analysis - pending
+File - 3. Overview
+Here I write my progress and some thoughts and learnings in key sentences.
